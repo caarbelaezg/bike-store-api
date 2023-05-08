@@ -5,12 +5,19 @@ import {
   Body,
   Param,
   Query,
-  ParseIntPipe,
   Put,
   Delete,
 } from '@nestjs/common';
+
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  FilterProductDto,
+} from '../dtos/products.dto';
+
 import { ProductsService } from '../services/products.service';
-import { CreateProductDto, UpdateProductDto } from '../dtos/products.dto';
+
+import { MongoIdPipe } from '../../common/mongo-id/mongo-id.pipe';
 
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 
@@ -21,16 +28,12 @@ export class ProductsController {
 
   @Get()
   @ApiOperation({ summary: 'List of products' })
-  getProducts(
-    @Query('limit') limit = 100,
-    @Query('offset') offset = 0,
-    @Query('brand') brand: string,
-  ) {
-    return this.productService.findAll();
+  getProducts(@Query() params: FilterProductDto) {
+    return this.productService.findAll(params);
   }
 
   @Get(':productId')
-  getOne(@Param('productId', ParseIntPipe) productId: number) {
+  getOne(@Param('productId') productId: string) {
     return this.productService.findOne(productId);
   }
 
@@ -39,16 +42,16 @@ export class ProductsController {
     return this.productService.create(payload);
   }
 
-  @Put()
+  @Put(':id')
   update(
-    @Param('id', ParseIntPipe) id: number,
+    @Param('id', MongoIdPipe) id: string,
     @Body() payload: UpdateProductDto,
   ) {
     return this.productService.upadte(id, payload);
   }
 
   @Delete()
-  delete(@Param('id', ParseIntPipe) id: number) {
+  delete(@Param('id') id: string) {
     return this.productService.remove(id);
   }
 }
