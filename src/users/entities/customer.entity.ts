@@ -1,8 +1,8 @@
-import { Prop, Schema, SchemaFactory, raw } from '@nestjs/mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document, Types } from 'mongoose';
 
 @Schema()
-export class Customer {
+export class Customer extends Document {
   @Prop({ required: true })
   name: string;
 
