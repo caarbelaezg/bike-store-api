@@ -6,11 +6,10 @@ import {
   Body,
   Put,
   Delete,
-  ParseIntPipe,
 } from '@nestjs/common';
 
 import { UsersService } from '../services/users.service';
-import { CreateUserDto, UpdateUserDto } from '../dtos/user.dto';
+import { CreateUserDto, CreatedUserDto, UpdateUserDto } from '../dtos/user.dto';
 
 import { ApiTags } from '@nestjs/swagger';
 
@@ -25,30 +24,27 @@ export class UsersController {
   }
 
   @Get(':id')
-  get(@Param('id', ParseIntPipe) id: number) {
+  get(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
 
   @Get(':id/orders')
-  getOrders(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.getOrderByUser(id);
+  getOrders(@Param('id') id: string) {
+    return this.usersService.getOrdersByUser(id);
   }
 
   @Post()
-  create(@Body() payload: CreateUserDto) {
+  create(@Body() payload: CreateUserDto): Promise<CreatedUserDto> {
     return this.usersService.create(payload);
   }
 
   @Put(':id')
-  update(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() payload: UpdateUserDto,
-  ) {
+  update(@Param('id') id: string, @Body() payload: UpdateUserDto) {
     return this.usersService.update(id, payload);
   }
 
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.usersService.remove(+id);
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(id);
   }
 }
